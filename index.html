@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard R3 Ortopedia - HGV</title>
+    
+    <!-- Google Fonts: Roboto & Material Symbols Rounded -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
+    
+    <!-- Bootstrap Grid Only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap-grid.min.css" rel="stylesheet">
+    
+    <!-- HTML2PDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+        /* --- MATERIAL DESIGN 3 TOKENS --- */
+        :root {
+            --md-sys-color-primary: #005AC1;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-primary-container: #D8E2FF;
+            --md-sys-color-on-primary-container: #001A41;
+            --md-sys-color-secondary: #575E71;
+            --md-sys-color-secondary-container: #DBE2F9;
+            --md-sys-color-tertiary: #715573;
+            --md-sys-color-tertiary-container: #FBD7FC;
+            --md-sys-color-error: #BA1A1A;
+            --md-sys-color-error-container: #FFDAD6;
+            --md-sys-color-on-error-container: #410002;
+            --md-sys-color-success: #146c2e;
+            --md-sys-color-success-container: #c4eed0;
+            --md-sys-color-on-success-container: #051f0a;
+            --md-sys-color-background: #FEF7FF;
+            --md-sys-color-on-background: #1D1B20;
+            --md-sys-color-surface: #FEF7FF;
+            --md-sys-color-surface-container-low: #F7F2FA;
+            --md-sys-color-surface-container: #F3EDF7;
+            --md-sys-color-surface-container-high: #ECE6F0;
+            --md-sys-color-outline: #79747E;
+            --md-sys-color-outline-variant: #CAC4D0;
+            --md-sys-elevation-1: 0px 1px 3px 1px rgba(0, 0, 0, 0.15), 0px 1px 2px 0px rgba(0, 0, 0, 0.30);
+            --md-sys-elevation-2: 0px 2px 6px 2px rgba(0, 0, 0, 0.15), 0px 1px 2px 0px rgba(0, 0, 0, 0.30);
+            --md-sys-shape-corner-medium: 12px;
+            --md-sys-shape-corner-large: 16px;
+            --md-sys-shape-corner-xl: 28px;
+            --md-sys-motion-easing-standard: cubic-bezier(0.2, 0.0, 0, 1.0);
+            --md-sys-motion-duration: 0.3s;
+        }
+
+        /* --- GLOBAL --- */
+        body {
+            background-color: var(--md-sys-color-surface-container-low);
+            color: var(--md-sys-color-on-background);
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 40px;
+        }
+
+        h1, h2, h3, h4, h5, h6, p { margin: 0; }
+
+        /* Typography */
+        .display-large { font-size: 57px; line-height: 64px; letter-spacing: -0.25px; font-weight: 400; }
+        .headline-medium { font-size: 28px; line-height: 36px; font-weight: 400; }
+        .headline-small { font-size: 24px; line-height: 32px; font-weight: 700; } 
+        .title-large { font-size: 22px; line-height: 28px; font-weight: 500; }
+        .title-medium { font-size: 16px; line-height: 24px; font-weight: 500; letter-spacing: 0.15px; }
+        .body-medium { font-size: 14px; line-height: 20px; letter-spacing: 0.25px; }
+        .label-large { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0.1px; }
+        .label-small { font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.5px; }
+
+        /* Custom Font Sizes for Prognosis Card */
+        .prog-title { font-size: 24px; font-weight: 700; letter-spacing: 0.5px; } 
+        .prog-score { font-size: 68px; line-height: 72px; letter-spacing: -1px; } 
+        .prog-status { font-size: 24px; font-weight: 700; line-height: 32px; } 
+
+        .material-symbols-rounded { vertical-align: middle; font-size: 20px; }
+        
+        /* App Bar - CUSTOMIZADO PARA AZUL ESCURO */
+        .top-app-bar {
+            background-color: #050f41; /* Fundo Azul Escuro */
+            color: #FFFFFF; /* Fonte Branca */
+            padding: 24px 16px;
+            text-align: center;
+            border-bottom-left-radius: var(--md-sys-shape-corner-xl);
+            border-bottom-right-radius: var(--md-sys-shape-corner-xl);
+            box-shadow: var(--md-sys-elevation-1);
+            margin-bottom: 24px;
+        }
+
+        /* Aumento de 20% nas fontes específicas do cabeçalho */
+        .top-app-bar .headline-medium {
+            font-size: 34px; /* Aumentado de 28px */
+            line-height: 40px;
+        }
+        
+        .top-app-bar .title-medium {
+            font-size: 20px; /* Aumentado de 16px */
+            line-height: 28px;
+            opacity: 0.9; /* Leve transparência para hierarquia, mas legível */
+        }
+
+        /* Cards */
+        .md-card {
+            background-color: var(--md-sys-color-surface);
+            border-radius: var(--md-sys-shape-corner-large);
+            box-shadow: var(--md-sys-elevation-1);
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: box-shadow var(--md-sys-motion-duration) var(--md-sys-motion-easing-standard);
+            border: none;
+        }
+        .md-card:hover { box-shadow: var(--md-sys-elevation-2); }
+        .md-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+        .md-card-title { color: var(--md-sys-color-primary); display: flex; align-items: center; gap: 8px; }
+
+        /* Diagnostic Area Cards (Clean Style) */
+        .area-card {
+            background-color: var(--md-sys-color-surface);
+            border-radius: 4px; 
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            border-left: 5px solid transparent; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .area-card.success { border-left-color: #198754; background-color: #d1e7dd; color: #0f5132; }
+        .area-card.error { border-left-color: #dc3545; background-color: #f8d7da; color: #842029; }
+
+        /* Select Field */
+        .md-select-container { position: relative; background-color: var(--md-sys-color-surface); border-radius: 4px; }
+        .md-select { width: 100%; height: 56px; padding: 0 16px; border: 1px solid var(--md-sys-color-outline); border-radius: 4px; font-family: 'Roboto', sans-serif; font-size: 16px; color: var(--md-sys-color-on-background); background: transparent; appearance: none; cursor: pointer; transition: border-color 0.2s; }
+        .md-select:focus { outline: none; border-color: var(--md-sys-color-primary); border-width: 2px; }
+        .md-select-wrapper { position: relative; min-width: 280px; }
+        .md-select-wrapper::after { content: 'expand_more'; font-family: 'Material Symbols Rounded'; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--md-sys-color-secondary); }
+
+        /* Sliders */
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; }
+        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 16px; cursor: pointer; background: var(--md-sys-color-secondary-container); border-radius: 16px; }
+        input[type=range]::-webkit-slider-thumb { height: 24px; width: 24px; border-radius: 50%; background: var(--md-sys-color-primary); cursor: pointer; -webkit-appearance: none; margin-top: -4px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); border: 2px solid var(--md-sys-color-surface); transition: transform 0.1s; }
+        input[type=range]:active::-webkit-slider-thumb { transform: scale(1.2); }
+
+        /* Prognosis Card */
+        .prognosis-card { border-radius: var(--md-sys-shape-corner-xl); color: var(--md-sys-color-on-primary-container); overflow: hidden; position: relative; transition: background-color 0.5s ease; }
+        .prognosis-good { background: linear-gradient(135deg, #198754 0%, #20c997 100%); color: white; }
+        .prognosis-bad { background: linear-gradient(135deg, #dc3545 0%, #f06548 100%); color: white; }
+
+        /* Resident Photo */
+        .resident-photo {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 6px solid rgba(255,255,255,0.3);
+            box-shadow: var(--md-sys-elevation-2);
+        }
+
+        /* Lists */
+        .topic-list { list-style: none; padding: 0; margin-top: 8px; }
+        .topic-list li { padding: 4px 0 4px 12px; border-left: 2px solid var(--md-sys-color-outline-variant); margin-bottom: 4px; font-size: 14px; color: var(--md-sys-color-on-background); }
+
+        /* Recommendation Accordion */
+        .rec-box { 
+            background-color: #fff8e1; 
+            border-radius: var(--md-sys-shape-corner-medium); 
+            border: 1px solid #ffe082;
+            overflow: hidden; /* For smooth expansion */
+            transition: all 0.3s ease;
+        }
+        
+        .accordion-header {
+            padding: 20px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: transparent;
+            transition: background-color 0.2s;
+        }
+        .accordion-header:hover {
+            background-color: rgba(0,0,0,0.03);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+            opacity: 0;
+            padding: 0 24px; /* Padding side only initially */
+        }
+
+        .rec-box.open .accordion-content {
+            max-height: 2000px; /* Arbitrary large height */
+            opacity: 1;
+            padding-bottom: 24px; /* Add bottom padding when open */
+        }
+
+        .accordion-icon {
+            transition: transform 0.3s ease;
+            font-size: 28px;
+            color: #856404;
+        }
+        
+        .rec-box.open .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeIn 0.6s ease-out forwards; }
+
+        /* Charts */
+        .chart-wrapper { position: relative; height: 320px; width: 100%; }
+        .radar-wrapper { position: relative; height: 380px; width: 100%; }
+
+        /* Image Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 95%;
+            max-height: 95vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .modal-image {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            object-fit: contain;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            transition: transform 0.2s;
+        }
+        
+        .modal-close-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Floating Action Button Style for Results */
+        .btn-results {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: none;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: var(--md-sys-elevation-2);
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-results:hover {
+            background-color: #004494;
+            box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Utilities */
+        .text-primary { color: var(--md-sys-color-primary); }
+        .text-error { color: var(--md-sys-color-error); }
+        .text-success { color: var(--md-sys-color-success); }
+        .fw-bold { font-weight: 700; }
+        .d-none { display: none; }
+    </style>
+</head>
+<body>
+
+    <header class="top-app-bar">
+        <div class="container">
+            <h1 class="headline-medium">Hospital Getúlio Vargas</h1>
+            <p class="title-medium" style="font-weight: 400;">Análise TARO 2025 & Simulador TEOT</p>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <div class="md-card animate-in" style="background-color: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); padding: 16px;">
+            <div style="display: flex; gap: 16px; align-items: start;">
+                <span class="material-symbols-rounded" style="font-size: 24px;">info</span>
+                <div>
+                    <span class="title-medium">Nota sobre a Dificuldade do TARO</span>
+                    <p class="body-medium" style="margin-top: 4px;">
+                        O TARO é historicamente <strong>mais difícil que o TEOT</strong>. Notas limítrofes aqui podem indicar aprovação no exame real. Esta nota corresponde aos <strong>40% da Teórica</strong>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 1: VISÃO GERAL -->
+        <section class="row animate-in" style="animation-delay: 0.1s;">
+            <div class="col-12">
+                <div class="md-card">
+                    <div class="md-card-header">
+                        <div>
+                            <h2 class="title-large md-card-title">
+                                <span class="material-symbols-rounded">bar_chart</span>
+                                <!-- UPDATED TITLE -->
+                                Desempenho dos R3 no TARO 2025
+                            </h2>
+                            <p class="body-medium" style="color: var(--md-sys-color-secondary);">Análise comparativa e desempenho por áreas.</p>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <h3 class="title-medium" style="text-align: center; margin-bottom: 16px;">Ranking dos R3 (Prova Teórica)</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="cohortChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <h3 class="title-medium" style="text-align: center; margin-bottom: 16px;">Média dos R3 por Área</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="cohortAreasChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 24px; padding: 16px; background-color: var(--md-sys-color-surface-container-high); border-radius: var(--md-sys-shape-corner-medium);">
+                        <h4 class="title-medium" style="display: flex; align-items: center; gap: 8px;">
+                            <span class="material-symbols-rounded">analytics</span>
+                            Análise do Preceptor
+                        </h4>
+                        <p id="cohortAnalysisText" class="body-medium" style="margin-top: 8px;">Carregando...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 2: ANÁLISE INDIVIDUAL -->
+        <section class="row animate-in" style="animation-delay: 0.2s;">
+            <div class="col-12">
+                <!-- ADICIONADO ID AQUI -->
+                <div id="individualAnalysisCard" class="md-card" style="border-top: 4px solid var(--md-sys-color-primary);">
+                    
+                    <div class="row align-items-center mb-4">
+                        <div class="col-md-6">
+                            <h2 class="headline-small md-card-title">
+                                <span class="material-symbols-rounded">person</span>
+                                Análise Individual
+                            </h2>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="md-select-wrapper">
+                                <label for="residentSelect" class="label-small" style="display: block; margin-bottom: 4px; color: var(--md-sys-color-primary);">Selecionar Residente</label>
+                                <select id="residentSelect" class="md-select"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Prognosis Card -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div id="prognosisCard" class="prognosis-card md-card">
+                                <div style="display: flex; align-items: center; justify-content: space-evenly; flex-wrap: wrap; gap: 16px;">
+                                    <img id="residentPhoto" src="" alt="Foto" class="resident-photo">
+                                    <div style="text-align: center;">
+                                        <div class="prog-title" style="opacity: 0.9; text-transform: uppercase;">NOTA TARO</div>
+                                        <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
+                                            <span id="individualTotalScore" class="prog-score" style="font-weight: 700;">0%</span>
+                                            <span id="prognosisIcon" class="material-symbols-rounded" style="font-size: 48px;"></span>
+                                        </div>
+                                        <div id="prognosisText" class="prog-status" style="margin-top: 4px;">Prognóstico</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts & Lists -->
+                    <div class="row">
+                        <div class="col-lg-5 mb-4 mb-lg-0">
+                            <div class="radar-wrapper d-flex justify-content-center">
+                                <canvas id="skillsRadar"></canvas>
+                            </div>
+                            <div style="text-align: center; margin-top: 8px;">
+                                <span class="label-small" style="color: var(--md-sys-color-secondary); margin-right: 12px;">
+                                    <span style="display:inline-block; width: 10px; height: 10px; background: #6c757d; border-radius: 50%;"></span> Média Nacional
+                                </span>
+                                <span class="label-small" style="color: var(--md-sys-color-primary);">
+                                    <span style="display:inline-block; width: 10px; height: 10px; background: #005AC1; border-radius: 50%;"></span> <span id="residentLegendName">Residente</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-7">
+                            <h3 class="title-large mb-3" style="border-bottom: 1px solid var(--md-sys-color-outline-variant); padding-bottom: 8px;">Diagnóstico de Desempenho</h3>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <h4 class="headline-small text-success mb-3" style="text-transform: uppercase; font-size: 20px;">
+                                        PONTOS FORTES
+                                    </h4>
+                                    <div id="strengthsList" style="display: flex; flex-direction: column;"></div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <h4 class="headline-small text-error mb-3" style="text-transform: uppercase; font-size: 20px;">
+                                        PONTOS FRACOS
+                                    </h4>
+                                    <div id="weaknessesList" style="display: flex; flex-direction: column;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Study Plan (Accordion) -->
+                    <!-- MODIFICADO: QUEBRA DE PÁGINA ADICIONADA AQUI -->
+                    <div class="row mt-4" style="page-break-before: always;">
+                        <div class="col-12">
+                            <!-- Accordion Wrapper -->
+                            <div id="studyAccordion" class="rec-box">
+                                <!-- Header -->
+                                <div class="accordion-header" onclick="toggleAccordion(event)">
+                                    <div>
+                                        <h3 class="headline-small" style="color: #856404; display: flex; align-items: center; gap: 8px; font-weight: 700; margin: 0;">
+                                            <span class="material-symbols-rounded">lightbulb</span>
+                                            PLANO DE ESTUDOS
+                                        </h3>
+                                        <p class="body-medium" style="color: #856404; font-weight: 400; margin: 4px 0 0 36px; font-size: 16px;">
+                                            (Baseado nos temas mais frequentes de cada Área nos últimos 5 anos de TEOT)
+                                        </p>
+                                    </div>
+                                    <span class="material-symbols-rounded accordion-icon">expand_more</span>
+                                </div>
+                                
+                                <!-- Content -->
+                                <div class="accordion-content">
+                                    <div id="studyStrategy">Selecione um residente.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 3: SIMULADOR TEOT -->
+        <section class="row animate-in" style="animation-delay: 0.3s;">
+            <div class="col-12">
+                <div class="md-card" style="border-top: 4px solid var(--md-sys-color-tertiary);">
+                    <h2 class="headline-small mb-4" style="color: var(--md-sys-color-tertiary); display: flex; align-items: center; gap: 12px;">
+                        <span class="material-symbols-rounded">calculate</span>
+                        Simulador TEOT - <span id="simulatorResidentName" class="fw-bold"></span>
+                    </h2>
+                    
+                    <div class="row g-5">
+                        <div class="col-lg-7">
+                            <div style="background-color: var(--md-sys-color-surface-container); padding: 16px; border-radius: 12px; margin-bottom: 24px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span class="label-large"><span class="material-symbols-rounded" style="font-size: 18px; margin-right: 8px;">assignment</span>Prova Teórica (TARO)</span>
+                                    <!-- CORREÇÃO DE COR AQUI: Texto escuro com fundo sutil -->
+                                    <span class="label-small" style="background: rgba(0,0,0,0.08); color: var(--md-sys-color-on-surface); padding: 4px 8px; border-radius: 4px; font-weight: 700;">Peso 40%</span>
+                                </div>
+                                <div style="margin-top: 8px;">
+                                    <span class="body-medium">Nota: <strong id="taroScoreDisplay">0.00</strong>/10</span>
+                                    <span class="material-symbols-rounded" style="font-size: 16px; margin: 0 8px;">arrow_forward</span>
+                                    <span class="title-medium" style="color: var(--md-sys-color-primary);">Pts: <span id="taroPointsDisplay">0.00</span>/4.00</span>
+                                    <div id="teoricaWarning" class="label-small text-error mt-2 d-none">
+                                        <span class="material-symbols-rounded" style="font-size: 14px; vertical-align: text-bottom;">warning</span> Abaixo de 50% (Eliminatório)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; flex-direction: column; gap: 24px;">
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                        <label for="inputOral" class="label-large">Oral (Peso 28%)</label>
+                                        <span id="valOral" class="title-medium text-primary">7.0</span>
+                                    </div>
+                                    <input type="range" id="inputOral" min="0" max="10" step="0.5" value="7.0" aria-label="Nota Prova Oral">
+                                </div>
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                        <label for="inputFisico" class="label-large">Exame Físico e Atitudes (Peso 14%)</label>
+                                        <span id="valFisico" class="title-medium text-primary">7.0</span>
+                                    </div>
+                                    <input type="range" id="inputFisico" min="0" max="10" step="0.5" value="7.0" aria-label="Nota Exame Físico">
+                                </div>
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                        <label for="inputHabil" class="label-large">Habilidades (Peso 14%)</label>
+                                        <span id="valHabil" class="title-medium text-primary">7.0</span>
+                                    </div>
+                                    <input type="range" id="inputHabil" min="0" max="10" step="0.5" value="7.0" aria-label="Nota Habilidades">
+                                </div>
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                        <label for="inputTrabalho" class="label-large">Trabalho (Peso 4%)</label>
+                                        <span id="valTrabalho" class="title-medium text-primary">10.0</span>
+                                    </div>
+                                    <input type="range" id="inputTrabalho" min="0" max="10" step="0.5" value="10.0" aria-label="Nota Trabalho">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- MODIFIED COLUMN FOR SIMULATOR RESULT -->
+                        <div class="col-lg-5">
+                            <div id="simulationResultCard" style="display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 16px; padding: 12px 16px; transition: background-color 0.3s ease, color 0.3s ease;">
+                                <div class="label-large" style="text-transform: uppercase; margin-bottom: 0px; opacity: 0.8; font-size: 12px;">Nota Final Estimada</div>
+                                <div id="finalScoreDisplay" class="display-large" style="font-weight: 700; font-size: 52px; line-height: 1.2;">0.00</div>
+                                
+                                <div id="approvalBadge" class="title-medium" style="margin-top: 4px; padding: 4px 16px; border-radius: 50px; background-color: rgba(255,255,255,0.2); font-size: 14px;">
+                                    Aguardando...
+                                </div>
+
+                                <ul style="margin-top: 12px; list-style: none; padding: 0; width: 100%;">
+                                    <!-- TEÓRICA -->
+                                    <li style="display: flex; align-items: center; gap: 8px; padding: 2px 0; border-bottom: 1px solid rgba(0,0,0,0.1);">
+                                        <span id="checkTeorica" class="material-symbols-rounded" style="font-size: 16px;">circle</span>
+                                        <span class="body-medium" style="font-size: 12px;">Teórica ≥ 50%</span>
+                                    </li>
+                                    
+                                    <!-- NOVAS ETAPAS DETALHADAS -->
+                                    <li style="display: flex; align-items: center; gap: 8px; padding: 2px 0; border-bottom: 1px solid rgba(0,0,0,0.1);">
+                                        <span id="checkOral" class="material-symbols-rounded" style="font-size: 16px;">circle</span>
+                                        <span class="body-medium" style="font-size: 12px;">Oral ≥ 50%</span>
+                                    </li>
+                                    <li style="display: flex; align-items: center; gap: 8px; padding: 2px 0; border-bottom: 1px solid rgba(0,0,0,0.1);">
+                                        <span id="checkFisico" class="material-symbols-rounded" style="font-size: 16px;">circle</span>
+                                        <span class="body-medium" style="font-size: 12px;">Ex. Físico e Atitudes ≥ 50%</span>
+                                    </li>
+                                    <li style="display: flex; align-items: center; gap: 8px; padding: 2px 0; border-bottom: 1px solid rgba(0,0,0,0.1);">
+                                        <span id="checkHabil" class="material-symbols-rounded" style="font-size: 16px;">circle</span>
+                                        <span class="body-medium" style="font-size: 12px;">Habilidades ≥ 50%</span>
+                                    </li>
+                                    <li style="display: flex; align-items: center; gap: 8px; padding: 2px 0; border-bottom: 1px solid rgba(0,0,0,0.1);">
+                                        <span id="checkTrabalho" class="material-symbols-rounded" style="font-size: 16px;">circle</span>
+                                        <span class="body-medium" style="font-size: 12px;">Trabalho ≥ 50%</span>
+                                    </li>
+
+                                    <!-- SOMA GLOBAL -->
+                                    <li style="display: flex; align-items: center; gap: 8px; padding: 2px 0;">
+                                        <span id="checkGlobal" class="material-symbols-rounded" style="font-size: 16px;">circle</span>
+                                        <span class="body-medium" style="font-size: 12px; font-weight: 700;">Soma Global ≥ 6.0</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BOTÕES DE AÇÃO (ATUALIZADO) -->
+        <div class="row animate-in" style="animation-delay: 0.4s; margin-top: 24px;">
+            <div class="col-12" style="display: flex; justify-content: flex-end; gap: 16px;">
+                <!-- BOTÃO DE DOWNLOAD COM TEXTO ATUALIZADO -->
+                <button onclick="downloadPDF()" class="btn-results" style="background-color: var(--md-sys-color-secondary);">
+                    <span class="material-symbols-rounded">picture_as_pdf</span>
+                    BAIXAR ANÁLISE E PLANO DE ESTUDO INDIVIDUAIS
+                </button>
+                
+                <button onclick="openModal()" class="btn-results">
+                    <span class="material-symbols-rounded">table_view</span>
+                    Resultado Completo TARO 2025
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <footer style="text-align: center; padding: 40px 0; color: var(--md-sys-color-secondary);">
+        <div class="container">
+            <small class="body-medium">Dashboard de desempenho dos R3 HGV no TARO 2025 e estimativas de desempenho no TEOT baseadas no edital 2026.</small>
+        </div>
+    </footer>
+
+    <!-- MODAL DE IMAGEM -->
+    <div id="imageModal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="closeModal(event)">
+                <span class="material-symbols-rounded">close</span> Fechar
+            </button>
+            <img src="https://i.imgur.com/LqI54UF.png" alt="Resultado Completo TARO 2025" class="modal-image">
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+
+    <script>
+        Chart.register(ChartDataLabels);
+
+        // --- DADOS ---
+        const nationalBenchmarks = {
+            'Ortopedia Adulto': 43.80, 'Ortopedia Infantil': 37.30, 'Básica': 53.40,
+            'Trauma Infantil': 42.60, 'Trauma Adulto': 41.10, 'Oncologia': 45.60,
+            'Anatomia': 55.00, 'TOTAL': 45.78
+        };
+        
+        const r3Data = [
+            { 
+                name: "AMIR POSTERNAK", 
+                photo: "https://i.imgur.com/6r2THWO.png",
+                scores: { 'Ortopedia Adulto': 28.60, 'Ortopedia Infantil': 27.30, 'Básica': 50.00, 'Trauma Infantil': 40.00, 'Trauma Adulto': 50.00, 'Oncologia': 42.90, 'Anatomia': 40.00, 'TOTAL': 40.00 } 
+            },
+            { 
+                name: "DYEGO LUIZ PEREIRA", 
+                photo: "https://i.imgur.com/xHAH5iv.png",
+                scores: { 'Ortopedia Adulto': 52.40, 'Ortopedia Infantil': 27.30, 'Básica': 68.80, 'Trauma Infantil': 40.00, 'Trauma Adulto': 40.00, 'Oncologia': 71.40, 'Anatomia': 80.00, 'TOTAL': 54.00 } 
+            },
+            { 
+                name: "LUIS MENEZES DA FONSECA NETO", 
+                photo: "https://i.imgur.com/UdA7li2.png",
+                scores: { 'Ortopedia Adulto': 38.10, 'Ortopedia Infantil': 45.50, 'Básica': 62.50, 'Trauma Infantil': 50.00, 'Trauma Adulto': 55.00, 'Oncologia': 85.70, 'Anatomia': 86.70, 'TOTAL': 58.00 } 
+            },
+            { 
+                name: "LUIZ PEDRO MARQUES GOMES", 
+                photo: "https://i.imgur.com/F2iuNhM.png",
+                scores: { 'Ortopedia Adulto': 47.60, 'Ortopedia Infantil': 27.30, 'Básica': 68.80, 'Trauma Infantil': 60.00, 'Trauma Adulto': 45.00, 'Oncologia': 85.70, 'Anatomia': 66.70, 'TOTAL': 55.00 } 
+            },
+            { 
+                name: "PEDRO VITOR SOARES FONSECA", 
+                photo: "https://i.imgur.com/ZqhBrjp.png",
+                scores: { 'Ortopedia Adulto': 57.10, 'Ortopedia Infantil': 27.30, 'Básica': 31.20, 'Trauma Infantil': 60.00, 'Trauma Adulto': 35.00, 'Oncologia': 42.90, 'Anatomia': 53.30, 'TOTAL': 44.00 } 
+            },
+            { 
+                name: "VICTOR HUGO RODRIGUES BANDEIRA", 
+                photo: "https://i.imgur.com/yyrmTvF.png",
+                scores: { 'Ortopedia Adulto': 47.60, 'Ortopedia Infantil': 36.40, 'Básica': 81.20, 'Trauma Infantil': 30.00, 'Trauma Adulto': 50.00, 'Oncologia': 57.10, 'Anatomia': 53.30, 'TOTAL': 52.00 } 
+            }
+        ];
+
+        const areaBooks = {
+            'Ortopedia Adulto': "Ref: Campbell 14ª ed; Motta Filho",
+            'Ortopedia Infantil': "Ref: Tachdjian 6ª ed; Lovell & Winter 8ª ed",
+            'Trauma Adulto': "Ref: Rockwood & Green 9ª ed",
+            'Trauma Infantil': "Ref: Rockwood & Wilkins 9ª ed",
+            'Básica': "Ref: Barros Filho 3ª ed; Leite & Faloppa",
+            'Oncologia': "Ref: Campbell; Motta Filho",
+            'Anatomia': "Ref: Netter 7ª ed"
+        };
+
+        const teotTopThemes = {
+            'Ortopedia Adulto': [
+                "Lesões Meniscais, menisco discoide e reparos meniscais",
+                "Mão reumatoide",
+                "Síndrome do manguito rotador",
+                "Artroplastias do quadril",
+                "Lesões do LCA"
+            ],
+            'Ortopedia Infantil': [
+                "Pé torto congênito e técnica de Ponseti",
+                "Displasia de desenvolvimento do quadril",
+                "Deformidades congênitas dos membros inferiores",
+                "Epifisiolistese do fêmur proximal",
+                "Pioartrites na criança"
+            ],
+            'Trauma Adulto': [
+                "Fraturas do rádio distal",
+                "Traumatismo Raquimedular e síndrome da cauda equina",
+                "Fraturas do anel pélvico",
+                "Luxação do cotovelo",
+                "Fraturas Distal do Fêmur e da Patela"
+            ],
+            'Trauma Infantil': [
+                "Fraturas do cotovelo na criança (EM, EL e CR)",
+                "Lesões fisárias",
+                "Fraturas da mão e do punho na criança",
+                "Fraturas do fêmur proximal na criança",
+                "Fraturas da diáfise do fêmur na criança"
+            ],
+            'Básica': [
+                "Pseudoartroses",
+                "Exame Físico da Coluna",
+                "Osteomielites",
+                "Pioartrites",
+                "Exame físico da mão e do punho"
+            ],
+            'Oncologia': [
+                "Osteossarcomas",
+                "Metástases ósseas",
+                "Tumor de células gigantes",
+                "Sarcoma de Ewing",
+                "Estadiamento de Enneking"
+            ],
+            'Anatomia': [
+                "Anatomia do ombro",
+                "Anatomia da coxa",
+                "Anatomia do antebraço",
+                "Neuroanatomia dos membros inferiores",
+                "Anatomia da perna"
+            ]
+        };
+
+        // --- CONFIGURAÇÃO CHART.JS ---
+        Chart.defaults.font.family = "'Roboto', sans-serif";
+        Chart.defaults.color = '#575E71';
+        Chart.defaults.maintainAspectRatio = false;
+
+        function getDisplayName(fullName) {
+            const first = fullName.split(' ')[0];
+            if (first === "LUIS") return "MENEZES";
+            if (first === "LUIZ") return ["LUIZ", "PEDRO"];
+            if (first === "VICTOR") return ["VICTOR", "HUGO"];
+            return first;
+        }
+
+        function getBarColor(value) {
+            if (value >= 50) {
+                return '#146c2e'; // Solid Green (Success)
+            } else {
+                return '#BA1A1A'; // Solid Red (Error)
+            }
+        }
+
+        // --- GRÁFICOS ---
+        function initCohortChart() {
+            const ctx = document.getElementById('cohortChart').getContext('2d');
+            const sortedR3 = [...r3Data].sort((a,b) => b.scores.TOTAL - a.scores.TOTAL);
+            const names = sortedR3.map(r => getDisplayName(r.name));
+            const totalScores = sortedR3.map(r => r.scores.TOTAL);
+            const teotCutoff = new Array(names.length).fill(50);
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: names,
+                    datasets: [
+                        {
+                            label: 'Nota TARO (%)',
+                            data: totalScores,
+                            backgroundColor: totalScores.map(s => s >= 50 ? '#146c2e' : '#BA1A1A'), 
+                            borderRadius: 4,
+                            order: 2,
+                            datalabels: {
+                                color: 'white',
+                                anchor: 'end',
+                                align: 'start',
+                                offset: -5,
+                                font: { weight: 'bold', size: 12 },
+                                formatter: (value) => Math.round(value) + '%'
+                            }
+                        },
+                        {
+                            label: 'Corte (50%)',
+                            data: teotCutoff,
+                            type: 'line',
+                            borderColor: '#1D1B20',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            order: 0,
+                            datalabels: { display: false }
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: false, max: 100 },
+                        x: { 
+                            grid: { display: false }, 
+                            ticks: { 
+                                font: { 
+                                    size: 11, 
+                                    weight: 'bold' // BOLD LABELS FOR RESIDENT NICKNAMES
+                                } 
+                            } 
+                        }
+                    }
+                }
+            });
+
+            const avgR3 = totalScores.reduce((a, b) => a + b, 0) / totalScores.length;
+            document.getElementById('cohortAnalysisText').innerHTML = `
+                Média TARO dos R3: <strong>${avgR3.toFixed(2)}%</strong>. 
+                <br>Considerando a dificuldade maior do TARO, residentes acima de 45-50% mostram bom prognóstico.
+            `;
+        }
+
+        // --- UPDATE HERE: ADDING ICONS (SIZE UPDATED) AND BOLD LABELS ---
+        function initCohortAreasChart() {
+            const ctx = document.getElementById('cohortAreasChart').getContext('2d');
+            const categories = Object.keys(r3Data[0].scores).filter(k => k !== 'TOTAL');
+            const areaAverages = categories.map(cat => {
+                const sum = r3Data.reduce((acc, curr) => acc + curr.scores[cat], 0);
+                return { cat, avg: sum / r3Data.length };
+            }).sort((a, b) => b.avg - a.avg);
+
+            const labels = areaAverages.map(a => {
+                let label = a.cat.replace('Ortopedia ', 'Ort. ').replace('Trauma ', 'Tr. ');
+                return label;
+            });
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Média (%)',
+                        data: areaAverages.map(a => a.avg),
+                        backgroundColor: areaAverages.map(a => getBarColor(a.avg)),
+                        borderRadius: 4,
+                        datalabels: {
+                            color: 'white',
+                            anchor: 'end',
+                            align: 'start',
+                            font: { weight: 'bold', size: 12 },
+                            formatter: (value) => Math.round(value) + '%'
+                        }
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { display: false, max: 115 },
+                        y: { 
+                            grid: { display: false }, 
+                            ticks: { 
+                                font: function(context) {
+                                    const label = context.tick.label;
+                                    if (label.includes('Oncologia') || label.includes('Ort. Infantil')) {
+                                        return { weight: 'bold', size: 12, family: 'Roboto' };
+                                    }
+                                    return { weight: 'normal', size: 11, family: 'Roboto' };
+                                }
+                            } 
+                        }
+                    }
+                },
+                plugins: [{
+                    id: 'customIcons',
+                    afterDraw: (chart) => {
+                        const ctx = chart.ctx;
+                        const yAxis = chart.scales.y;
+                        const xAxis = chart.scales.x;
+                        
+                        chart.data.labels.forEach((label, index) => {
+                            if (label.includes('Oncologia')) {
+                                const y = yAxis.getPixelForTick(index);
+                                const x = xAxis.getPixelForValue(chart.data.datasets[0].data[index]);
+                                ctx.font = '24px Material Symbols Rounded'; // INCREASED SIZE
+                                ctx.fillStyle = '#FFD700'; // Gold
+                                ctx.fillText('trophy', x + 35, y + 8); // ADJUSTED Y OFFSET
+                            }
+                            if (label.includes('Ort. Infantil')) {
+                                const y = yAxis.getPixelForTick(index);
+                                const x = xAxis.getPixelForValue(chart.data.datasets[0].data[index]);
+                                ctx.font = '24px Material Symbols Rounded'; // INCREASED SIZE
+                                ctx.fillStyle = '#BA1A1A'; // Red
+                                ctx.fillText('warning', x + 35, y + 8); // ADJUSTED Y OFFSET
+                            }
+                        });
+                    }
+                }]
+            });
+        }
+
+        let radarChart = null;
+        function initRadarChart(resident) {
+            const ctx = document.getElementById('skillsRadar').getContext('2d');
+            const categories = Object.keys(resident.scores).filter(k => k !== 'TOTAL');
+            const residentValues = categories.map(cat => resident.scores[cat]);
+            const nationalValues = categories.map(cat => nationalBenchmarks[cat]);
+
+            if (radarChart) radarChart.destroy();
+
+            radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        label: Array.isArray(getDisplayName(resident.name)) ? getDisplayName(resident.name).join(' ') : getDisplayName(resident.name),
+                        data: residentValues,
+                        fill: true,
+                        backgroundColor: 'rgba(0, 90, 193, 0.2)',
+                        borderColor: '#005AC1',
+                        pointBackgroundColor: '#005AC1',
+                        pointRadius: 4,
+                        borderWidth: 2,
+                        datalabels: { display: false }
+                    }, {
+                        label: 'Média Nac.',
+                        data: nationalValues,
+                        fill: true,
+                        backgroundColor: 'rgba(87, 94, 113, 0.1)',
+                        borderColor: '#575E71',
+                        borderDash: [5, 5],
+                        pointRadius: 0,
+                        borderWidth: 1,
+                        datalabels: { display: false }
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#E0E2EC' },
+                            grid: { color: '#E0E2EC' },
+                            suggestedMin: 0, suggestedMax: 100,
+                            pointLabels: { font: { size: 11, family: 'Roboto' }, color: '#49454F' },
+                            ticks: { display: false }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+            
+            const legendName = Array.isArray(getDisplayName(resident.name)) 
+                ? getDisplayName(resident.name).join(' ') 
+                : getDisplayName(resident.name);
+            document.getElementById('residentLegendName').innerText = legendName;
+        }
+
+        // --- INTERATIVIDADE ---
+        function generateFeedback(resident) {
+            const strengthsEl = document.getElementById('strengthsList');
+            const weaknessesEl = document.getElementById('weaknessesList');
+            const strategyEl = document.getElementById('studyStrategy');
+            
+            strengthsEl.innerHTML = '';
+            weaknessesEl.innerHTML = '';
+            let mandatoryHTML = '', reviewHTML = '';
+
+            const categories = Object.keys(resident.scores).filter(k => k !== 'TOTAL');
+            const sortedData = categories.map(cat => ({
+                cat: cat,
+                score: resident.scores[cat],
+                benchmark: nationalBenchmarks[cat],
+                diff: resident.scores[cat] - nationalBenchmarks[cat]
+            })).sort((a, b) => b.score - a.score);
+
+            sortedData.forEach(item => {
+                const { cat, score, benchmark, diff } = item;
+                
+                const diagnosticCard = `
+                    <div class="area-card ${diff < 0 ? 'error' : 'success'}">
+                        <span class="title-medium" style="color: ${diff < 0 ? '#842029' : '#0f5132'}; font-weight: 700;">${cat}</span>
+                        <span class="headline-small" style="color: ${diff < 0 ? '#842029' : '#0f5132'}; font-weight: 700;">
+                            ${score.toFixed(1)}%
+                        </span>
+                    </div>`;
+
+                if (diff > 5) strengthsEl.innerHTML += diagnosticCard;
+                if (diff < 0) weaknessesEl.innerHTML += diagnosticCard;
+
+                const themes = teotTopThemes[cat] || ["Revisão Geral"];
+                let themesList = '<ul class="topic-list">';
+                themes.forEach(theme => { themesList += `<li>${theme}</li>`; });
+                themesList += '</ul>';
+
+                const studyBlock = `
+                    <div style="margin-bottom: 24px;">
+                        <div class="title-medium" style="color: ${diff < 0 ? 'var(--md-sys-color-error)' : 'var(--md-sys-color-success)'}">
+                            <span class="material-symbols-rounded" style="font-size:18px; vertical-align:text-bottom; margin-right:4px;">${diff < 0 ? 'warning' : 'check_circle'}</span>${cat}
+                        </div>
+                        ${themesList}
+                    </div>`;
+
+                diff < 0 ? mandatoryHTML += studyBlock : reviewHTML += studyBlock;
+            });
+
+            if (!strengthsEl.innerHTML) strengthsEl.innerHTML = '<em class="body-medium" style="opacity:0.7">Sem destaques >5% acima da média.</em>';
+            if (!weaknessesEl.innerHTML) weaknessesEl.innerHTML = '<em class="body-medium" style="opacity:0.7">Excelente! Nenhuma nota abaixo da média.</em>';
+
+            strategyEl.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6" style="border-right: 1px solid var(--md-sys-color-outline-variant);">
+                        <h6 class="headline-small text-error" style="text-transform:uppercase; margin-bottom:16px; font-size: 20px; font-weight: 700;">Estudo Obrigatório (Urgente)</h6>
+                        ${mandatoryHTML || '<div class="body-medium text-secondary">Nenhuma área crítica.</div>'}
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="headline-small text-success" style="text-transform:uppercase; margin-bottom:16px; font-size: 20px; font-weight: 700; padding-left:12px;">Revisão Recomendada</h6>
+                        <div style="padding-left:12px;">${reviewHTML || '<div class="body-medium text-secondary">Sem áreas para revisão.</div>'}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updatePrognosisCard(resident) {
+            const totalScore = resident.scores.TOTAL;
+            const card = document.getElementById('prognosisCard');
+            const scoreDisplay = document.getElementById('individualTotalScore');
+            const textDisplay = document.getElementById('prognosisText');
+            const iconDisplay = document.getElementById('prognosisIcon');
+            const photoEl = document.getElementById('residentPhoto');
+
+            scoreDisplay.innerText = totalScore.toFixed(1) + '%';
+            photoEl.src = resident.photo;
+
+            card.classList.remove('prognosis-good', 'prognosis-bad');
+
+            if (totalScore >= 50) {
+                card.classList.add('prognosis-good');
+                textDisplay.innerText = "Bom Prognóstico";
+                iconDisplay.innerText = 'thumb_up';
+            } else {
+                card.classList.add('prognosis-bad');
+                textDisplay.innerText = "Mau Prognóstico";
+                iconDisplay.innerText = 'warning';
+            }
+        }
+
+        // --- SIMULADOR ---
+        let currentResidentTaroScore = 0;
+        function updateSimulator(resident) {
+            currentResidentTaroScore = resident.scores.TOTAL;
+            const displayName = getDisplayName(resident.name);
+            const nameString = Array.isArray(displayName) ? displayName.join(' ') : displayName;
+            document.getElementById('simulatorResidentName').innerText = nameString;
+
+            const taroPoints = (currentResidentTaroScore / 100) * 4.0;
+            document.getElementById('taroScoreDisplay').innerText = (currentResidentTaroScore / 10).toFixed(2);
+            document.getElementById('taroPointsDisplay').innerText = taroPoints.toFixed(2);
+            
+            const warningEl = document.getElementById('teoricaWarning');
+            currentResidentTaroScore < 50 ? warningEl.classList.remove('d-none') : warningEl.classList.add('d-none');
+            calculateFinalScore();
+        }
+
+        function calculateFinalScore() {
+            const oral = parseFloat(document.getElementById('inputOral').value);
+            const fisico = parseFloat(document.getElementById('inputFisico').value);
+            const habil = parseFloat(document.getElementById('inputHabil').value);
+            const trabalho = parseFloat(document.getElementById('inputTrabalho').value);
+
+            const pTeorica = (currentResidentTaroScore / 100) * 4.0;
+            const pOral = (oral / 10) * 2.8;
+            const pFisico = (fisico / 10) * 1.4;
+            const pHabil = (habil / 10) * 1.4;
+            const pTrabalho = (trabalho / 10) * 0.4;
+            const finalScore = pTeorica + pOral + pFisico + pHabil + pTrabalho;
+
+            document.getElementById('valOral').innerText = oral.toFixed(1);
+            document.getElementById('valFisico').innerText = fisico.toFixed(1);
+            document.getElementById('valHabil').innerText = habil.toFixed(1);
+            document.getElementById('valTrabalho').innerText = trabalho.toFixed(1);
+            document.getElementById('finalScoreDisplay').innerText = finalScore.toFixed(2);
+
+            // Condições Individuais (Critério ≥ 5.0 para etapas práticas)
+            const passedTeorica = currentResidentTaroScore >= 50;
+            const passedOral = oral >= 5.0;
+            const passedFisico = fisico >= 5.0;
+            const passedHabil = habil >= 5.0;
+            const passedTrabalho = trabalho >= 5.0; // Benchmark visual
+
+            // Condição Global (Todas as etapas obrigatórias + Nota Final)
+            // Assumindo que Trabalho não reprova sozinho, mas entra na soma. 
+            // Porém, Oral, Físico e Habilidades costumam ter corte.
+            const passedGlobal = finalScore >= 6.0;
+            
+            const allPassed = passedTeorica && passedOral && passedFisico && passedHabil && passedGlobal;
+
+            // Atualizar Ícones da Lista
+            updateCheck('checkTeorica', passedTeorica);
+            updateCheck('checkOral', passedOral);
+            updateCheck('checkFisico', passedFisico);
+            updateCheck('checkHabil', passedHabil);
+            updateCheck('checkTrabalho', passedTrabalho);
+            updateCheck('checkGlobal', passedGlobal);
+
+            // Update Badge and NEW Card Logic
+            const badge = document.getElementById('approvalBadge');
+            const resultCard = document.getElementById('simulationResultCard');
+            const scoreText = document.getElementById('finalScoreDisplay');
+
+            if (allPassed) {
+                // Success State
+                badge.innerHTML = '<span class="material-symbols-rounded" style="vertical-align:middle; margin-right:4px;">check_circle</span> APROVADO';
+                
+                // New Card Colors (Green Container, Dark Green Text)
+                resultCard.style.backgroundColor = 'var(--md-sys-color-success-container)';
+                resultCard.style.color = 'var(--md-sys-color-on-success-container)';
+                scoreText.style.color = 'var(--md-sys-color-on-success-container)';
+            } else {
+                // Failure State
+                badge.innerHTML = '<span class="material-symbols-rounded" style="vertical-align:middle; margin-right:4px;">cancel</span> REPROVADO';
+                
+                // New Card Colors (Red Container, Dark Red Text)
+                resultCard.style.backgroundColor = 'var(--md-sys-color-error-container)';
+                resultCard.style.color = 'var(--md-sys-color-on-error-container)';
+                scoreText.style.color = 'var(--md-sys-color-on-error-container)';
+            }
+        }
+
+        function updateCheck(id, status) {
+            const el = document.getElementById(id);
+            if (status) {
+                el.innerText = 'check_circle';
+                // Remove direct classes, handle color via parent context if simple, or strict
+                // Since the parent now changes color, we can keep icons neutral or strict. 
+                // Let's keep them strict green/red for clarity inside the colored card?
+                // Actually, inside a colored card, 'text-success' might clash. 
+                // Let's use opacity or strict white/black?
+                // Simplest: Use inheritance or specific dark color.
+                el.style.opacity = '1';
+            } else {
+                el.innerText = 'cancel';
+                el.style.opacity = '0.7';
+            }
+        }
+
+        ['inputOral', 'inputFisico', 'inputHabil', 'inputTrabalho'].forEach(id => {
+            document.getElementById(id).addEventListener('input', calculateFinalScore);
+        });
+
+        // --- ACCORDION LOGIC ---
+        function toggleAccordion(event) {
+            event.stopPropagation(); // Prevents immediate closing
+            const wrapper = document.getElementById('studyAccordion');
+            wrapper.classList.toggle('open');
+        }
+
+        // Close accordion on outside click
+        document.addEventListener('click', function(event) {
+            const wrapper = document.getElementById('studyAccordion');
+            const isClickInside = wrapper.contains(event.target);
+            
+            if (!isClickInside && wrapper.classList.contains('open')) {
+                wrapper.classList.remove('open');
+            }
+        });
+
+        // --- MODAL LOGIC ---
+        function openModal() {
+            document.getElementById('imageModal').classList.add('active');
+        }
+
+        function closeModal(event) {
+            // Close if clicking overlay or close button, but NOT image itself if inside container
+            // The onclick is on the overlay.
+            // If clicking image directly, event.target will be image.
+            if (event.target.classList.contains('modal-image')) return;
+            
+            document.getElementById('imageModal').classList.remove('active');
+        }
+
+        // --- PDF DOWNLOAD ---
+        function downloadPDF() {
+            const element = document.getElementById('individualAnalysisCard');
+            const residentName = document.getElementById('residentLegendName').innerText;
+            const accordion = document.getElementById('studyAccordion');
+            const accordionContent = accordion.querySelector('.accordion-content');
+            
+            // 1. Armazena o estado atual (se estava aberto ou fechado)
+            const wasOpen = accordion.classList.contains('open');
+            
+            // 2. Salva a transição original para restaurar depois
+            const originalTransition = accordionContent.style.transition;
+            
+            // 3. Desativa a animação para abrir instantaneamente e força a abertura
+            accordionContent.style.transition = 'none';
+            accordion.classList.add('open');
+            
+            // Força o navegador a recalcular o layout (Reflow) para garantir que o html2canvas veja ele aberto
+            void accordion.offsetHeight;
+
+            const opt = {
+              margin:       [10, 10],
+              filename:     `Analise_TARO_${residentName}.pdf`,
+              image:        { type: 'jpeg', quality: 0.98 },
+              html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
+              jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+              pagebreak:    { mode: 'css' } // Força o uso da quebra de página CSS
+            };
+
+            // 4. Gera o PDF e restaura o estado original
+            html2pdf().set(opt).from(element).save().then(() => {
+                // Se estava fechado antes, fecha novamente
+                if (!wasOpen) {
+                    accordion.classList.remove('open');
+                }
+                
+                // Restaura a animação suave (com um pequeno delay para não animar o fechamento instantâneo)
+                setTimeout(() => {
+                    accordionContent.style.transition = originalTransition;
+                }, 50);
+            });
+        }
+
+        // --- INIT ---
+        function populateDropdown() {
+            const select = document.getElementById('residentSelect');
+            r3Data.forEach((res, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.text = res.name;
+                select.appendChild(option);
+            });
+            select.addEventListener('change', (e) => {
+                const resident = r3Data[e.target.value];
+                initRadarChart(resident);
+                generateFeedback(resident);
+                updatePrognosisCard(resident);
+                updateSimulator(resident);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initCohortChart();
+            initCohortAreasChart();
+            populateDropdown();
+            // Load First
+            initRadarChart(r3Data[0]);
+            generateFeedback(r3Data[0]);
+            updatePrognosisCard(r3Data[0]);
+            updateSimulator(r3Data[0]);
+        });
+
+    </script>
+</body>
+</html>
