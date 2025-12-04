@@ -148,6 +148,19 @@
         input[type=range]::-webkit-slider-thumb { height: 24px; width: 24px; border-radius: 50%; background: var(--md-sys-color-primary); cursor: pointer; -webkit-appearance: none; margin-top: -4px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); border: 2px solid var(--md-sys-color-surface); transition: transform 0.1s; }
         input[type=range]:active::-webkit-slider-thumb { transform: scale(1.2); }
 
+        /* Tooltip Trigger Icon */
+        .tooltip-trigger {
+            font-size: 18px;
+            color: var(--md-sys-color-secondary);
+            cursor: pointer;
+            vertical-align: middle;
+            margin-left: 6px;
+            transition: color 0.2s;
+        }
+        .tooltip-trigger:hover {
+            color: var(--md-sys-color-primary);
+        }
+
         /* Prognosis Card */
         .prognosis-card { border-radius: var(--md-sys-shape-corner-xl); color: var(--md-sys-color-on-primary-container); overflow: hidden; position: relative; transition: background-color 0.5s ease; }
         .prognosis-good { background: linear-gradient(135deg, #198754 0%, #20c997 100%); color: white; }
@@ -283,6 +296,39 @@
             max-width: 500px;
             box-shadow: var(--md-sys-elevation-2);
             position: relative;
+        }
+
+        /* GENERIC INFO MODAL (RICH TOOLTIP) */
+        .modal-content-info {
+            background-color: var(--md-sys-color-surface);
+            border-radius: 16px;
+            padding: 32px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--md-sys-elevation-2);
+            position: relative;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+        
+        .info-table th, .info-table td {
+            border: 1px solid var(--md-sys-color-outline-variant);
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .info-table th {
+            background-color: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+            font-weight: 700;
         }
 
         .sabatina-btn {
@@ -461,7 +507,7 @@
 
                     <div class="row g-4">
                         <div class="col-lg-6">
-                            <h3 class="title-medium" style="text-align: center; margin-bottom: 16px;">Ranking dos R3 (Prova Teórica)</h3>
+                            <h3 class="title-medium" style="text-align: center; margin-bottom: 16px;">Desempenho dos R3 TARO 2025</h3>
                             <div class="chart-wrapper">
                                 <canvas id="cohortChart"></canvas>
                             </div>
@@ -650,28 +696,36 @@
                             <div style="display: flex; flex-direction: column; gap: 24px;">
                                 <div>
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                        <label for="inputOral" class="label-large">Oral (Peso 28%)</label>
+                                        <label for="inputOral" class="label-large">Oral (Peso 28%) 
+                                            <span class="material-symbols-rounded tooltip-trigger" onclick="openGenericInfo('oral')">info</span>
+                                        </label>
                                         <span id="valOral" class="title-medium text-primary">7.0</span>
                                     </div>
                                     <input type="range" id="inputOral" min="0" max="10" step="2" value="6.0" aria-label="Nota Prova Oral">
                                 </div>
                                 <div>
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                        <label for="inputFisico" class="label-large">Exame Físico e Atitudes (Peso 14%)</label>
+                                        <label for="inputFisico" class="label-large">Exame Físico e Atitudes (Peso 14%)
+                                            <span class="material-symbols-rounded tooltip-trigger" onclick="openGenericInfo('fisico')">info</span>
+                                        </label>
                                         <span id="valFisico" class="title-medium text-primary">7.0</span>
                                     </div>
                                     <input type="range" id="inputFisico" min="0" max="10" step="2" value="6.0" aria-label="Nota Exame Físico">
                                 </div>
                                 <div>
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                        <label for="inputHabil" class="label-large">Habilidades (Peso 14%)</label>
+                                        <label for="inputHabil" class="label-large">Habilidades (Peso 14%)
+                                            <span class="material-symbols-rounded tooltip-trigger" onclick="openGenericInfo('habil')">info</span>
+                                        </label>
                                         <span id="valHabil" class="title-medium text-primary">7.0</span>
                                     </div>
                                     <input type="range" id="inputHabil" min="0" max="10" step="2" value="6.0" aria-label="Nota Habilidades">
                                 </div>
                                 <div>
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                        <label for="inputTrabalho" class="label-large">Trabalho (Peso 4%)</label>
+                                        <label for="inputTrabalho" class="label-large">Trabalho (Peso 4%)
+                                            <span class="material-symbols-rounded tooltip-trigger" onclick="openGenericInfo('trabalho')">info</span>
+                                        </label>
                                         <span id="valTrabalho" class="title-medium text-primary">10.0</span>
                                     </div>
                                     <input type="range" id="inputTrabalho" min="0" max="10" step="5" value="10.0" aria-label="Nota Trabalho">
@@ -812,6 +866,25 @@
         </div>
     </div>
 
+    <!-- NOVO MODAL GENÉRICO PARA INFORMAÇÕES (SIMULADOR) -->
+    <div id="genericInfoModal" class="modal-overlay" onclick="closeModal(event, 'genericInfoModal')">
+        <div class="modal-content-info">
+            <button class="modal-close-btn" style="top: 10px; right: 10px; color: var(--md-sys-color-on-background);" onclick="closeModal(event, 'genericInfoModal', true)">
+                <span class="material-symbols-rounded">close</span>
+            </button>
+            
+            <h3 id="genericInfoTitle" class="headline-small" style="color: var(--md-sys-color-primary); display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <!-- Título injetado via JS -->
+            </h3>
+            
+            <hr style="border: 0; height: 1px; background-color: var(--md-sys-color-outline-variant); margin-bottom: 24px;">
+            
+            <div id="genericInfoContent" style="color: var(--md-sys-color-on-surface); line-height: 1.6;">
+                <!-- Conteúdo injetado via JS -->
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL DE APRESENTAÇÃO (GOOGLE SLIDES) -->
     <div id="presentationModal" class="modal-overlay" onclick="closeModal(event, 'presentationModal')">
         <div class="modal-content-presentation">
@@ -837,6 +910,75 @@
             'Anatomia': "O desempenho em Anatomia também surpreende esta preceptoria, que tinha uma visão distorcida do real aprendizado dos R3 nesta área antes da compilação desses dados. <strong>O desempenho está bom, mas pode e deve melhorar ainda mais.</strong>",
             'Ort. Infantil': "<strong>Esses dados são muito preocupantes.</strong> Esse desempenho pode ser explicado pela complexidade inerente aos temas da Ortopedia Pediátrica, porém <strong>esse desempenho é inadimissível</strong> considerando as cargas horárias teórica e prática das atividades de Ortopedia Pediátrica no decorrer da residência. <strong>Outro fato que preocupa é a alta frequência dos temas dessa subespecialidade em todas as etapas do TEOT.</strong>",
             'Tr. Adulto': "O desempenho dos R3 em Trauma Adulto deveria estar no topo desse gráfico, tendo em vista principalmente a intensidade de convívio teórico e prático que a residência oferece durante os 3 anos. <strong>Esse desempenho deveria estar acima de 90%.</strong> Reforço o que já foi dito em diversas oportunidades: <strong>Não é permitido errar questões de trauma na prova teórica! Não é permitido tirar nota diferente de 10 nas questões de trauma da prova oral!</strong> Essas regras são, principalmente, para fazer sobrar uma \"gordura\" nas questões das áreas teoricamente mais difíceis e com menor contato prático."
+        };
+
+        // --- NEW: Simulator Info Data ---
+        const simulatorTooltips = {
+            'oral': `
+                <p><strong>Esta etapa é composta de 16 casos clínicos com 6 minutos de duração divididas em 2 blocos de 8 casos.</strong> A cada bloco há uma 2 examinadores e 1 observador distintos para cada residente. Os 16 casos clínicos, frequentemente obedecem a seguinte distribuição:</p>
+                <ul class="topic-list">
+                    <li>Trauma Infantil: 2 casos</li>
+                    <li>Ortopedia Infantil: 4 casos</li>
+                    <li>Trauma Adulto: 5 casos</li>
+                    <li>Ortopedia Adulto: 4 casos</li>
+                    <li>Oncologia: 1 caso</li>
+                </ul>
+            `,
+            'fisico': `
+                <p><strong>Esta etapa é composta por 5 cenários práticos</strong> com a seguinte distribuição:</p>
+                <ul class="topic-list">
+                    <li>1º cenário: Exame físico normal de determinado segmento anatômico</li>
+                    <li>2º cenário: Exame físico direcionado para os sintomas de um paciente hipotético</li>
+                    <li>3º cenário: Exame físico direcionado a uma patologia específica</li>
+                    <li>4º cenário: Exame físico direcionado a uma patologia específica</li>
+                    <li>5º cenário: Questões sobre atitudes</li>
+                </ul>
+            `,
+            'habil': `
+                <p><strong>Esta etapa é por 5 estações práticas</strong>, com duração que varia entre 3 a 15 minutos, e que frequentemente obedecem a seguinte distribuição:</p>
+                <ul class="topic-list">
+                    <li>1 estação de avaliação radiográfica</li>
+                    <li>1 estação de procedimentos diversos (Suturas, reduções, etc...)</li>
+                    <li>1 estação de infiltrações</li>
+                    <li>2 estações de habilidades cirúrgicas (Trauma ou Ortopedia). Sendo uma estação mais rápida, durando cerca de 3 minutos, e outro estação mais longa, durando cerca de 15 minutos.</li>
+                </ul>
+            `,
+            'trabalho': `
+                <h4 style="margin-bottom: 8px;">Trabalhos Publicados</h4>
+                <table class="info-table">
+                    <thead>
+                        <tr>
+                            <th>Publicação</th>
+                            <th>Pontuação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <ul style="margin: 0; padding-left: 20px;">
+                                    <li>Revista Brasileira de Ortopedia</li>
+                                    <li>Acta Ortopédica Brasileira</li>
+                                    <li>Revistas Indexadas no Pubmed ou Scielo</li>
+                                    <li>Revista Columna</li>
+                                    <li>Journal of the Foot & Ankle</li>
+                                    <li>Revista Brasileira de Medicina do Esporte</li>
+                                </ul>
+                            </td>
+                            <td>0,4</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <ul style="margin: 0; padding-left: 20px;">
+                                    <li>Demais revistas</li>
+                                </ul>
+                            </td>
+                            <td>0,2</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h4 style="margin-bottom: 8px; margin-top: 16px;">Trabalhos inéditos e não publicados</h4>
+                <p>São avaliados pela CET e recebem nota de 0 a 10.</p>
+            `
         };
 
         // --- SABATINAS DATA ---
@@ -1497,6 +1639,24 @@
         ['inputOral', 'inputFisico', 'inputHabil', 'inputTrabalho'].forEach(id => {
             document.getElementById(id).addEventListener('input', calculateFinalScore);
         });
+
+        // --- NEW: Generic Info Modal Logic ---
+        function openGenericInfo(key) {
+            const content = simulatorTooltips[key];
+            let title = "";
+            
+            // Define titles based on key
+            switch(key) {
+                case 'oral': title = "Prova Oral"; break;
+                case 'fisico': title = "Exame Físico e Atitudes"; break;
+                case 'habil': title = "Habilidades"; break;
+                case 'trabalho': title = "TRABALHO CIENTÍFICO"; break;
+            }
+
+            document.getElementById('genericInfoTitle').innerText = title;
+            document.getElementById('genericInfoContent').innerHTML = content;
+            document.getElementById('genericInfoModal').classList.add('active');
+        }
 
         // --- ACCORDION LOGIC ---
         function toggleAccordion(event) {
