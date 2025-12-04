@@ -274,6 +274,17 @@
             gap: 12px;
         }
 
+        /* ANALYSIS MODAL SPECIFIC (NEW) */
+        .modal-content-analysis {
+            background-color: var(--md-sys-color-surface);
+            border-radius: 16px;
+            padding: 32px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: var(--md-sys-elevation-2);
+            position: relative;
+        }
+
         .sabatina-btn {
             background-color: var(--md-sys-color-surface-container);
             color: var(--md-sys-color-on-background);
@@ -642,28 +653,28 @@
                                         <label for="inputOral" class="label-large">Oral (Peso 28%)</label>
                                         <span id="valOral" class="title-medium text-primary">7.0</span>
                                     </div>
-                                    <input type="range" id="inputOral" min="0" max="10" step="0.5" value="7.0" aria-label="Nota Prova Oral">
+                                    <input type="range" id="inputOral" min="0" max="10" step="2" value="6.0" aria-label="Nota Prova Oral">
                                 </div>
                                 <div>
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                                         <label for="inputFisico" class="label-large">Exame Físico e Atitudes (Peso 14%)</label>
                                         <span id="valFisico" class="title-medium text-primary">7.0</span>
                                     </div>
-                                    <input type="range" id="inputFisico" min="0" max="10" step="0.5" value="7.0" aria-label="Nota Exame Físico">
+                                    <input type="range" id="inputFisico" min="0" max="10" step="2" value="6.0" aria-label="Nota Exame Físico">
                                 </div>
                                 <div>
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                                         <label for="inputHabil" class="label-large">Habilidades (Peso 14%)</label>
                                         <span id="valHabil" class="title-medium text-primary">7.0</span>
                                     </div>
-                                    <input type="range" id="inputHabil" min="0" max="10" step="0.5" value="7.0" aria-label="Nota Habilidades">
+                                    <input type="range" id="inputHabil" min="0" max="10" step="2" value="6.0" aria-label="Nota Habilidades">
                                 </div>
                                 <div>
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                                         <label for="inputTrabalho" class="label-large">Trabalho (Peso 4%)</label>
                                         <span id="valTrabalho" class="title-medium text-primary">10.0</span>
                                     </div>
-                                    <input type="range" id="inputTrabalho" min="0" max="10" step="0.5" value="10.0" aria-label="Nota Trabalho">
+                                    <input type="range" id="inputTrabalho" min="0" max="10" step="5" value="10.0" aria-label="Nota Trabalho">
                                 </div>
                             </div>
                         </div>
@@ -779,6 +790,28 @@
         </div>
     </div>
 
+    <!-- NOVO MODAL DE ANÁLISE -->
+    <div id="analysisModal" class="modal-overlay" onclick="closeModal(event, 'analysisModal')">
+        <div class="modal-content-analysis">
+            <button class="modal-close-btn" style="top: 10px; right: 10px; color: var(--md-sys-color-on-background);" onclick="closeModal(event, 'analysisModal', true)">
+                <span class="material-symbols-rounded">close</span>
+            </button>
+            
+            <h3 class="headline-small" style="color: var(--md-sys-color-primary); display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <span class="material-symbols-rounded" style="font-size: 32px;">analytics</span>
+                Análise do Preceptor
+            </h3>
+            
+            <hr style="border: 0; height: 1px; background-color: var(--md-sys-color-outline-variant); margin-bottom: 24px;">
+            
+            <div style="background-color: var(--md-sys-color-secondary-container); padding: 16px; border-radius: 8px; border-left: 4px solid var(--md-sys-color-secondary);">
+                <!-- O conteúdo deste parágrafo será injetado via JS -->
+                <p id="analysisModalText" class="body-medium" style="color: var(--md-sys-color-on-secondary-container); font-style: italic; line-height: 1.6;">
+                </p>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL DE APRESENTAÇÃO (GOOGLE SLIDES) -->
     <div id="presentationModal" class="modal-overlay" onclick="closeModal(event, 'presentationModal')">
         <div class="modal-content-presentation">
@@ -794,6 +827,17 @@
 
     <script>
         Chart.register(ChartDataLabels);
+
+        // VARIÁVEL PARA O HITBOX DO ÍCONE DE INFO
+        let activeHitboxes = [];
+
+        // --- NEW: Analysis Data Dictionary ---
+        const analysisData = {
+            'Oncologia': "O desempenho em Oncologia Ortopédica causa bastante surpresa (positiva) na preceptoria, já que esta é a subespecialidade com a qual os residentes tem contato prático em menor frequência. Por outro lado, levanta a hipótese que a insistência quase doentia deste preceptor em discutir os temas da Oncologia Ortopédica gera impactos positivos e mensuráveis no aprendizado dos R3.",
+            'Anatomia': "O desempenho em Anatomia também surpreende esta preceptoria, que tinha uma visão distorcida do real aprendizado dos R3 nesta área antes da compilação desses dados. <strong>O desempenho está bom, mas pode e deve melhorar ainda mais.</strong>",
+            'Ort. Infantil': "<strong>Esses dados são muito preocupantes.</strong> Esse desempenho pode ser explicado pela complexidade inerente aos temas da Ortopedia Pediátrica, porém <strong>esse desempenho é inadimissível</strong> considerando as cargas horárias teórica e prática das atividades de Ortopedia Pediátrica no decorrer da residência. <strong>Outro fato que preocupa é a alta frequência dos temas dessa subespecialidade em todas as etapas do TEOT.</strong>",
+            'Tr. Adulto': "O desempenho dos R3 em Trauma Adulto deveria estar no topo desse gráfico, tendo em vista principalmente a intensidade de convívio teórico e prático que a residência oferece durante os 3 anos. <strong>Esse desempenho deveria estar acima de 90%.</strong> Reforço o que já foi dito em diversas oportunidades: <strong>Não é permitido errar questões de trauma na prova teórica! Não é permitido tirar nota diferente de 10 nas questões de trauma da prova oral!</strong> Essas regras são, principalmente, para fazer sobrar uma \"gordura\" nas questões das áreas teoricamente mais difíceis e com menor contato prático."
+        };
 
         // --- SABATINAS DATA ---
         const sabatinas = [
@@ -813,7 +857,6 @@
         };
         
         // Dados dos residentes e suas notas extraídas do PDF de Simulados
-        // UPDATED: Using arrays to force line breaks in Chart.js
         const simuladosLabels = ['Básica', 'Joelho', ['Ombro', 'Ortopedia'], ['Ombro', 'Trauma'], ['Pé', 'Ortopedia'], ['Pé', 'Trauma'], 'Quadril'];
         
         // Médias calculadas dos R3 para cada simulado
@@ -1009,7 +1052,8 @@
 
         // --- UPDATE HERE: ADDING ICONS (SIZE UPDATED) AND BOLD LABELS ---
         function initCohortAreasChart() {
-            const ctx = document.getElementById('cohortAreasChart').getContext('2d');
+            const chartCanvas = document.getElementById('cohortAreasChart');
+            const ctx = chartCanvas.getContext('2d');
             const categories = Object.keys(r3Data[0].scores).filter(k => k !== 'TOTAL');
             const areaAverages = categories.map(cat => {
                 const sum = r3Data.reduce((acc, curr) => acc + curr.scores[cat], 0);
@@ -1021,7 +1065,7 @@
                 return label;
             });
 
-            new Chart(ctx, {
+            const chart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
@@ -1057,6 +1101,26 @@
                                 }
                             } 
                         }
+                    },
+                    onClick: (e) => {
+                        // Check if click happened on ANY info icon in our list
+                        const canvasPosition = Chart.helpers.getRelativePosition(e, chart);
+                        
+                        const clickedBox = activeHitboxes.find(box => 
+                            canvasPosition.x >= box.x && 
+                            canvasPosition.x <= box.x + box.w &&
+                            canvasPosition.y >= box.y && 
+                            canvasPosition.y <= box.y + box.h
+                        );
+
+                        if (clickedBox) {
+                            // Populate Modal with dynamic content
+                            const content = analysisData[clickedBox.category];
+                            if (content) {
+                                document.getElementById('analysisModalText').innerHTML = content;
+                                document.getElementById('analysisModal').classList.add('active');
+                            }
+                        }
                     }
                 },
                 plugins: [{
@@ -1066,20 +1130,36 @@
                         const yAxis = chart.scales.y;
                         const xAxis = chart.scales.x;
                         
+                        // Reset hitboxes for this frame
+                        activeHitboxes = [];
+
                         chart.data.labels.forEach((label, index) => {
-                            if (label.includes('Oncologia')) {
+                            // Determine Category Key based on label text
+                            let categoryKey = null;
+                            if (label.includes('Oncologia')) categoryKey = 'Oncologia';
+                            else if (label.includes('Anatomia')) categoryKey = 'Anatomia';
+                            else if (label.includes('Ort. Infantil')) categoryKey = 'Ort. Infantil';
+                            else if (label.includes('Tr. Adulto')) categoryKey = 'Tr. Adulto'; // NEW
+
+                            if (categoryKey) {
                                 const y = yAxis.getPixelForTick(index);
                                 const x = xAxis.getPixelForValue(chart.data.datasets[0].data[index]);
-                                ctx.font = '24px Material Symbols Rounded'; // INCREASED SIZE
-                                ctx.fillStyle = '#FFD700'; // Gold
-                                ctx.fillText('trophy', x + 35, y + 8); // ADJUSTED Y OFFSET
-                            }
-                            if (label.includes('Ort. Infantil')) {
-                                const y = yAxis.getPixelForTick(index);
-                                const x = xAxis.getPixelForValue(chart.data.datasets[0].data[index]);
-                                ctx.font = '24px Material Symbols Rounded'; // INCREASED SIZE
-                                ctx.fillStyle = '#BA1A1A'; // Red
-                                ctx.fillText('warning', x + 35, y + 8); // ADJUSTED Y OFFSET
+                                
+                                // Info Icon Only
+                                // Positioned at x + 35 (consistent spacing)
+                                const infoX = x + 35; 
+                                ctx.font = '24px Material Symbols Rounded';
+                                ctx.fillStyle = '#575E71'; // Secondary color for info
+                                ctx.fillText('info', infoX, y + 8);
+                                
+                                // Store Hitbox
+                                activeHitboxes.push({
+                                    category: categoryKey,
+                                    x: infoX,
+                                    y: y - 16,
+                                    w: 24,
+                                    h: 24
+                                });
                             }
                         });
                     }
