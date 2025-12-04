@@ -221,7 +221,7 @@
         .chart-wrapper { position: relative; height: 320px; width: 100%; }
         .radar-wrapper { position: relative; height: 380px; width: 100%; }
 
-        /* Image Modal Styles */
+        /* Modal Base Styles */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -244,7 +244,8 @@
             pointer-events: auto;
         }
 
-        .modal-content {
+        /* Image Modal Specific */
+        .modal-content-image {
             position: relative;
             max-width: 95%;
             max-height: 95vh;
@@ -252,13 +253,65 @@
             flex-direction: column;
             align-items: center;
         }
-
         .modal-image {
             max-width: 100%;
             max-height: 90vh;
             border-radius: 8px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
             object-fit: contain;
+        }
+
+        /* Sabatina Menu Modal Specific */
+        .modal-content-menu {
+            background-color: var(--md-sys-color-surface);
+            border-radius: 24px;
+            padding: 24px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: var(--md-sys-elevation-2);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sabatina-btn {
+            background-color: var(--md-sys-color-surface-container);
+            color: var(--md-sys-color-on-background);
+            border: 1px solid transparent;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: left;
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        .sabatina-btn:hover {
+            background-color: var(--md-sys-color-secondary-container);
+            color: var(--md-sys-color-on-secondary-container);
+            transform: translateX(5px);
+        }
+
+        /* Presentation Viewer Modal Specific */
+        .modal-content-presentation {
+            width: 95vw;
+            height: 90vh;
+            background-color: #000;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .presentation-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
 
         .modal-close-btn {
@@ -286,6 +339,7 @@
         .btn-results {
             display: inline-flex;
             align-items: center;
+            justify-content: center; /* Garantir que o texto fique centralizado */
             gap: 8px;
             background-color: var(--md-sys-color-primary);
             color: var(--md-sys-color-on-primary);
@@ -347,6 +401,11 @@
             }
             #prognosisCard.md-card {
                 padding: 16px; /* Reduzido padding interno */
+            }
+            /* Stack buttons on mobile */
+            .btn-results {
+                width: 100%;
+                margin-bottom: 8px;
             }
         }
     </style>
@@ -659,14 +718,23 @@
         </section>
 
         <!-- BOTÕES DE AÇÃO (ATUALIZADO) -->
+        <!-- Justify content space-between for equidistant spacing -->
         <div class="row animate-in" style="animation-delay: 0.4s; margin-top: 24px;">
-            <div class="col-12" style="display: flex; justify-content: flex-end; gap: 16px;">
-                <!-- BOTÃO DE DOWNLOAD COM TEXTO ATUALIZADO -->
+            <div class="col-12" style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+                
+                <!-- NOVO BOTÃO DE SABATINAS (VERDE E NOVO ÍCONE) -->
+                <button onclick="openSabatinaMenu()" class="btn-results" style="background-color: var(--md-sys-color-success);">
+                    <span class="material-symbols-rounded">co_present</span>
+                    SABATINAS REALIZADAS
+                </button>
+
+                <!-- BOTÃO DE DOWNLOAD -->
                 <button onclick="downloadPDF()" class="btn-results" style="background-color: var(--md-sys-color-secondary);">
                     <span class="material-symbols-rounded">picture_as_pdf</span>
                     BAIXAR ANÁLISE INDIVIDUAL
                 </button>
                 
+                <!-- BOTÃO RESULTADO -->
                 <button onclick="openModal()" class="btn-results">
                     <span class="material-symbols-rounded">table_view</span>
                     RESULTADO TARO 2025
@@ -683,12 +751,41 @@
     </footer>
 
     <!-- MODAL DE IMAGEM -->
-    <div id="imageModal" class="modal-overlay" onclick="closeModal(event)">
-        <div class="modal-content">
-            <button class="modal-close-btn" onclick="closeModal(event)">
+    <div id="imageModal" class="modal-overlay" onclick="closeModal(event, 'imageModal')">
+        <div class="modal-content-image">
+            <button class="modal-close-btn" onclick="closeModal(event, 'imageModal', true)">
                 <span class="material-symbols-rounded">close</span> Fechar
             </button>
             <img src="https://i.imgur.com/LqI54UF.png" alt="Resultado Completo TARO 2025" class="modal-image">
+        </div>
+    </div>
+
+    <!-- MODAL MENU DE SABATINAS (ATUALIZADO) -->
+    <div id="sabatinaMenuModal" class="modal-overlay" onclick="closeModal(event, 'sabatinaMenuModal')">
+        <div class="modal-content-menu">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--md-sys-color-outline-variant);">
+                <!-- TÍTULO ATUALIZADO COM ÍCONE -->
+                <h3 class="title-large" style="color: var(--md-sys-color-primary); display: flex; align-items: center;">
+                    <span class="material-symbols-rounded" style="margin-right: 12px;">co_present</span>
+                    SABATINAS TEOT 2026
+                </h3>
+                <button style="background: none; border: none; cursor: pointer;" onclick="closeModal(event, 'sabatinaMenuModal', true)">
+                    <span class="material-symbols-rounded" style="color: var(--md-sys-color-on-surface);">close</span>
+                </button>
+            </div>
+            <div id="sabatinaListContainer" style="display: flex; flex-direction: column; gap: 8px;">
+                <!-- Botões gerados via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE APRESENTAÇÃO (GOOGLE SLIDES) -->
+    <div id="presentationModal" class="modal-overlay" onclick="closeModal(event, 'presentationModal')">
+        <div class="modal-content-presentation">
+            <button class="modal-close-btn" onclick="closeModal(event, 'presentationModal', true)">
+                <span class="material-symbols-rounded">close</span> Fechar Apresentação
+            </button>
+            <iframe id="presentationFrame" class="presentation-frame" src="" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
         </div>
     </div>
 
@@ -697,6 +794,16 @@
 
     <script>
         Chart.register(ChartDataLabels);
+
+        // --- SABATINAS DATA ---
+        const sabatinas = [
+            { title: "OMBRO TRAUMA", url: "https://docs.google.com/presentation/d/1x0pIriH4pciFhpCFWWv9vPbEDNnsEPxIjraPeYLvNpw/edit?usp=drivesdk" },
+            { title: "OMBRO ORTOPEDIA", url: "https://docs.google.com/presentation/d/1c1gi-m82raLcvQ0UTXsQqt2yE6dLENp3mytxJkLuX2A/edit?usp=drivesdk" },
+            { title: "JOELHO", url: "https://docs.google.com/presentation/d/17tGyuBkGdfECxJdwdMU9LYei8rqvXnMPVODETeyiLd0/edit?usp=drivesdk" },
+            { title: "BÁSICAS", url: "https://docs.google.com/presentation/d/1gaoB1kKJM2pb-3CJlrZ44GVk_-iBM_G_f-g3z4FUrXw/edit?usp=drivesdk" },
+            { title: "PÉ", url: "https://docs.google.com/presentation/d/15eJAB_m4EUPcvWs_g7dLBk7BZrKmLGjaAbenAp7WEm8/edit?usp=drivesdk" },
+            { title: "QUADRIL", url: "https://docs.google.com/presentation/d/17Lm16-yUTjH_5_1giYs-vlaV1bTLvYPtrpGHPKGyn9w/edit?usp=drivesdk" }
+        ];
 
         // --- DADOS ---
         const nationalBenchmarks = {
@@ -1328,18 +1435,58 @@
             }
         });
 
-        // --- MODAL LOGIC ---
+        // --- MODAL LOGIC (GENERIC) ---
         function openModal() {
             document.getElementById('imageModal').classList.add('active');
         }
 
-        function closeModal(event) {
-            // Close if clicking overlay or close button, but NOT image itself if inside container
-            // The onclick is on the overlay.
-            // If clicking image directly, event.target will be image.
-            if (event.target.classList.contains('modal-image')) return;
+        function closeModal(event, modalId, force = false) {
+            if (force || event.target.id === modalId) {
+                document.getElementById(modalId).classList.remove('active');
+                
+                // Se for o modal de apresentação, limpar o iframe para parar videos/carregamento
+                if (modalId === 'presentationModal') {
+                    document.getElementById('presentationFrame').src = '';
+                }
+            }
+        }
+
+        // --- SABATINAS LOGIC ---
+        function openSabatinaMenu() {
+            const listContainer = document.getElementById('sabatinaListContainer');
+            // Limpa lista atual
+            listContainer.innerHTML = '';
             
-            document.getElementById('imageModal').classList.remove('active');
+            sabatinas.forEach(item => {
+                const btn = document.createElement('div');
+                btn.className = 'sabatina-btn';
+                btn.innerHTML = `
+                    <span>${item.title}</span>
+                    <span class="material-symbols-rounded" style="font-size: 20px;">open_in_new</span>
+                `;
+                btn.onclick = () => openPresentation(item.url);
+                listContainer.appendChild(btn);
+            });
+
+            document.getElementById('sabatinaMenuModal').classList.add('active');
+        }
+
+        function openPresentation(url) {
+            // Converter link de edit para embed
+            // Input: .../edit?usp=drivesdk
+            // Output: .../embed?start=false&loop=false&delayms=3000
+            
+            let embedUrl = url;
+            if (url.includes('/edit')) {
+                embedUrl = url.split('/edit')[0] + '/embed?start=false&loop=false&delayms=3000';
+            }
+            
+            const frame = document.getElementById('presentationFrame');
+            frame.src = embedUrl;
+            
+            // Fecha menu, abre apresentação
+            document.getElementById('sabatinaMenuModal').classList.remove('active');
+            document.getElementById('presentationModal').classList.add('active');
         }
 
         // --- PDF DOWNLOAD ---
