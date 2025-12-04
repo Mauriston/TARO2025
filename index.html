@@ -314,6 +314,32 @@
         .text-success { color: var(--md-sys-color-success); }
         .fw-bold { font-weight: 700; }
         .d-none { display: none; }
+
+        /* --- MOBILE ADJUSTMENTS (NOVO) --- */
+        @media (max-width: 768px) {
+            #prognosisCard .resident-photo {
+                width: 125px; /* Reduzido de 180px para ~70% */
+                height: 125px;
+                border-width: 4px;
+            }
+            #prognosisCard .prog-score {
+                font-size: 48px; /* Reduzido de 68px */
+                line-height: 52px;
+            }
+            #prognosisCard .prog-title {
+                font-size: 18px; /* Reduzido de 24px */
+            }
+            #prognosisCard .prog-status {
+                font-size: 18px; /* Reduzido de 24px */
+                line-height: 22px;
+            }
+            #prognosisCard .material-symbols-rounded {
+                font-size: 36px !important; /* Reduzido de 48px */
+            }
+            #prognosisCard.md-card {
+                padding: 16px; /* Reduzido padding interno */
+            }
+        }
     </style>
 </head>
 <body>
@@ -601,12 +627,12 @@
                 <!-- BOTÃO DE DOWNLOAD COM TEXTO ATUALIZADO -->
                 <button onclick="downloadPDF()" class="btn-results" style="background-color: var(--md-sys-color-secondary);">
                     <span class="material-symbols-rounded">picture_as_pdf</span>
-                    BAIXAR ANÁLISE E PLANO DE ESTUDO INDIVIDUAIS
+                    BAIXAR ANÁLISE INDIVIDUAL
                 </button>
                 
                 <button onclick="openModal()" class="btn-results">
                     <span class="material-symbols-rounded">table_view</span>
-                    Resultado Completo TARO 2025
+                    RESULTADO TARO 2025
                 </button>
             </div>
         </div>
