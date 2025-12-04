@@ -492,9 +492,8 @@
                     </div>
 
                     <!-- NOVO CARD: DESEMPENHO EM SIMULADOS TEÓRICOS -->
-                    <!-- MODIFICADO: USA CLASSE INVISÍVEL NA TELA PARA QUEBRA NO PDF -->
-                    <div class="pdf-page-break"></div>
-                    <div class="row mt-4">
+                    <!-- MODIFICADO: ADICIONADO ID 'simuladosCardContainer' PARA CONTROLE NO PDF -->
+                    <div class="row mt-4 mb-4" id="simuladosCardContainer">
                         <div class="col-12">
                             <div class="md-card">
                                 <!-- UPDATED CHART TITLE -->
@@ -518,8 +517,10 @@
                     </div>
 
                     <!-- Study Plan (Accordion) -->
-                    <!-- REMOVIDO QUEBRA DE PÁGINA AQUI -->
-                    <div class="row mt-4">
+                    <!-- MODIFICADO: QUEBRA DE PÁGINA MOVIDA PARA CÁ -->
+                    <div class="pdf-page-break"></div>
+                    <!-- REMOVIDO mt-4 DAQUI PARA ALINHAR AO TOPO NO PDF -->
+                    <div class="row">
                         <div class="col-12">
                             <!-- Accordion Wrapper -->
                             <div id="studyAccordion" class="rec-box">
@@ -1347,18 +1348,24 @@
             const residentName = document.getElementById('residentLegendName').innerText;
             const accordion = document.getElementById('studyAccordion');
             const accordionContent = accordion.querySelector('.accordion-content');
-            
+            const simuladosContainer = document.getElementById('simuladosCardContainer'); // Captura o container
+
             // 1. Armazena o estado atual (se estava aberto ou fechado)
             const wasOpen = accordion.classList.contains('open');
             
             // 2. Salva a transição original para restaurar depois
             const originalTransition = accordionContent.style.transition;
             
-            // 3. Desativa a animação para abrir instantaneamente e força a abertura
+            // 3. Modificações para o PDF:
+            // a) Abre o acordeão instantaneamente
             accordionContent.style.transition = 'none';
             accordion.classList.add('open');
             
-            // Força o navegador a recalcular o layout (Reflow) para garantir que o html2canvas veja ele aberto
+            // b) Oculta o gráfico de simulados (remove do fluxo do documento)
+            // Isso elimina o espaço em branco causado pelo data-html2canvas-ignore
+            simuladosContainer.style.display = 'none';
+
+            // Força o navegador a recalcular o layout (Reflow)
             void accordion.offsetHeight;
 
             const opt = {
@@ -1367,18 +1374,20 @@
               image:        { type: 'jpeg', quality: 0.98 },
               html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
               jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-              // Configuração IMPORTANTE para reconhecer a quebra de página via CSS
               pagebreak:    { mode: ['css', 'legacy'] } 
             };
 
             // 4. Gera o PDF e restaura o estado original
             html2pdf().set(opt).from(element).save().then(() => {
+                // Restaura o gráfico de simulados
+                simuladosContainer.style.display = '';
+
                 // Se estava fechado antes, fecha novamente
                 if (!wasOpen) {
                     accordion.classList.remove('open');
                 }
                 
-                // Restaura a animação suave (com um pequeno delay para não animar o fechamento instantâneo)
+                // Restaura a animação suave
                 setTimeout(() => {
                     accordionContent.style.transition = originalTransition;
                 }, 50);
